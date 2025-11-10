@@ -1,0 +1,26 @@
+<label for="chk1">
+  <input 
+    type="radio" 
+    id="chk1" 
+    name="department" 
+    value="IPD" 
+    (change)="onDepartmentChange($event)" 
+    checked
+  >
+  1. (IPD) In patient department
+</label>
+<br>
+
+<label for="chk2">
+  <input 
+    type="radio" 
+    id="chk2" 
+    name="department" 
+    value="OPD" 
+    (change)="onDepartmentChange($event)"
+  >
+  2. (OPD) Out patient department
+</label>
+<br>
+
+<button type="button" (click)="getSelected()">Show selected</button>
