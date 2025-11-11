@@ -126,10 +126,37 @@ export class PreArrangementForm implements OnInit{
         },
       };
 
-      this.camundaService.getUserTaskByProcessInstance(this.processInstanceId, this.taskname)
+      console.log("proccess instance key",this);
+
+      this.camundaService.getUserTaskByProcessInstance(this.processInstanceKey, this.taskname)
         .subscribe({
-           next: (res) => {
-             this.userTaskKey = res.userTaskKey;                          
+          next: (res) => {
+            this.userTaskKey = res.userTaskKey;
+            const variables = {
+              customerInfo: {
+                nationalId: fv.nationalId || '',
+                policyNumber: fv.policyNumber || '',
+              },
+              visitInfo: {
+                visitType: fv.visitType || '',
+                reservationType: fv.reservationType || '',
+                HospitalName: fv.hospitalName || '',
+                ICD10: fv.icd10 || '',
+                ICD9: fv.icd9 || '',
+                AdmissionDate: fv.admissionDate || '',
+                AccidentDate: fv.accidentDate || '',
+              }
+            };
+            console.log("user task Key ", this.userTaskKey);
+            // Complete user task
+            this.camundaService.completeUserTask(this.userTaskKey, variables).subscribe({
+              next: () => {
+                console.log('✅ Task completed successfully');
+              },
+              error: (err) => {
+                console.error('❌ Error completing task:', err);
+              },
+            });
           },
           error: (err) => {
             console.error('Error fetching user task:', err);
@@ -137,32 +164,8 @@ export class PreArrangementForm implements OnInit{
           }
         });
 
-        const variables = {customerInfo: {
-          nationalId: fv.nationalId || '',
-          policyNumber: fv.policyNumber || '',
-        },
-        visitInfo: {
-          visitType: fv.visitType || '',
-          reservationType: fv.reservationType || '',
-          HospitalName: fv.hospitalName || '',
-          ICD10: fv.icd10 || '',
-          ICD9: fv.icd9 || '',
-          AdmissionDate: fv.admissionDate || '',
-          AccidentDate: fv.accidentDate || '',
-        }
-      };
-
-       this.userTaskKey = this.userTaskKey;
-       console.log("user task Key ", this.userTaskKey);
-         // Complete user task
-       this.camundaService.completeUserTask(this.userTaskKey, variables).subscribe({
-  next: () => {
-    console.log('✅ Task completed successfully');
-  },
-  error: (err) => {
-    console.error('❌ Error completing task:', err);
-  },
-});
+       
+ 
 
      
       /*  searchApi(body).then((response) => {
