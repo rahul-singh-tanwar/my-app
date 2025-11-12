@@ -16,7 +16,7 @@ export class CamundaService {
 
   startProcess(payload: Object): Observable<any> {
     console.log('Starting process with payload:', payload);
-    return this.http.post(`${this.baseUrl}/start-process`, { payload });
+    return this.http.post(`${this.baseUrl}/start-process`, payload);
   }
 
   searchUserTasks(): Observable<any> {
