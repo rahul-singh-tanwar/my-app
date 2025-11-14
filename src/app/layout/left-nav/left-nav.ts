@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CamundaService } from '../../../utils/camunda.service';
+import { IframeService } from '../../services/iframe.service';
 
 @Component({
   selector: 'app-left-nav',
@@ -14,10 +15,14 @@ import { CamundaService } from '../../../utils/camunda.service';
 export class LeftNav {
    @Input() collapsed = false;
 
-   constructor(private router: Router, private camundaService: CamundaService ) 
+   constructor(private iframeService: IframeService, private router: Router, private camundaService: CamundaService ) 
    {}
 
-
+  // open iframe
+  openIframe(url: string) {
+    this.iframeService.setUrl(url);
+    this.router.navigate(['/iframe']);
+  }
   navigateTo(route: string) {
     console.log('Navigating to:', route);
     this.router.navigate([route]);

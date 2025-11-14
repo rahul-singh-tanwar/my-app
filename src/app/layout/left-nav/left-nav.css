@@ -44,3 +44,18 @@
   background-color: #0968f7; /* Highlight active link */
   font-weight: bold;
 }
+
+.nav-link {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.nav-link:hover {
+  background-color: #f0f0f0;
+}

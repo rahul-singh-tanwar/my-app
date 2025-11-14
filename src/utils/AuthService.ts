@@ -46,7 +46,7 @@ export class AuthService {
 
     async login(username: string, password: string): Promise<any> {
         const params = new URLSearchParams();
-        params.append('grant_type', 'client_credentials');
+        params.append('grant_type', 'password');
         params.append('client_id', this.CLIENT_ID);
         params.append('client_secret', this.CLIENT_SECRET);
         params.append('username', username);

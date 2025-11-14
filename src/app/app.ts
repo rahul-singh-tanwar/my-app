@@ -13,6 +13,7 @@ import { filter } from 'rxjs/operators';
 import { NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-root',
   imports: [
@@ -24,7 +25,8 @@ import { CommonModule } from '@angular/common';
     RouterOutlet,
     LeftNav,
     MainContent,
-    Login
+    Login,
+ 
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'

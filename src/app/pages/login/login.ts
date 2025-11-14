@@ -27,7 +27,7 @@ export class Login {
       console.log('Login successful:', response);
       
       // Redirect to dashboard (or another route)
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/prearrangement']);
     } catch (error: any) {
       console.error('Login errsssor:', error);
       this.errorMessage = 'Invalid credentials or server error';
