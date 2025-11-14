@@ -21,8 +21,8 @@ import { PolicyDetailsDialog } from './policy-details-dialog/policy-details-dial
     MatButtonModule,
     MatExpansionModule,
     MatRadioModule,
-    MatDialogModule, // ✅ Use module instead of MatDialog
-    PolicyDetailsDialog // ✅ Only if PolicyDetailsDialog is also standalone
+    MatDialogModule,
+    PolicyDetailsDialog
   ],
   templateUrl: './review-policies.html',
   styleUrls: ['./review-policies.css']
@@ -99,11 +99,6 @@ export class ReviewPolicies {
 
   onSelectRow(row: any) {
     this.selectedRow = row;
-    // this.dialog.open(PolicyDetailsDialog, {
-    //   width: '1000px',
-    //   panelClass: 'custom-policy-dialog',
-    //   data: row
-    // });
     this.dialog.open(PolicyDetailsDialog, {
       width: '90vw',
       maxWidth: '1100px',

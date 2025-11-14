@@ -36,32 +36,22 @@ export class App {
   //   this.leftSidenav.toggle();
   // }
 
-  showLayout = true;
+  showLayout = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
+  username: string = '';
+  password: string = '';
+
   checkLoggedIn() {
-    // return this.authService.isAuthenticated();
-    return true;
+    return this.authService.isAuthenticated();
   }
 
+  onUserLoggedIn(token: string) {
+    console.log('Token received in AppComponent:', token);
+    this.showLayout = true;
 
-  ngOnInit(): void {
-    // 1️⃣ On app load, check token
-    // const isLoggedIn = this.authService.isAuthenticated();
-
-    // if (!isLoggedIn) {
-    //   this.authService.logout(); // clears token and routes to /login
-    // }
-
-
-    // 2️⃣ Listen to route changes
-    // this.router.events
-    //   .pipe(filter(event => event instanceof NavigationEnd))
-    //   .subscribe((event: any) => {
-    //     const onLoginPage = event.url.includes('login');
-    //     this.showLayout = !onLoginPage && this.authService.isAuthenticated();
-    //   });
+    this.router.navigate(['/prearrangement']);
   }
 
 }

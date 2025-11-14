@@ -39,7 +39,7 @@ export class PolicyDetailsDialog {
 
     // Collect uploaded files
     const uploadedFiles = {
-      labFiles: this.labFiles.getFiles(),      // Assuming FileUpload exposes a getFiles() method
+      labFiles: this.labFiles.getFiles(),
       formFiles: this.formFiles.getFiles(),
       otherFiles: this.otherFiles.getFiles()
     };
@@ -53,6 +53,7 @@ export class PolicyDetailsDialog {
     };
 
     // Expose payload to parent via close() or custom event
-    this.dialogRef.close(payload);
+    this.close();
+    // this.dialogRef.close(payload);
   }
 }

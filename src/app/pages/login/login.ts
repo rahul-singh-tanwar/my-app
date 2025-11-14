@@ -1,4 +1,4 @@
-import { Component  } from '@angular/core';
+import { Component, EventEmitter, Output  } from '@angular/core';
 import { FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,25 +16,29 @@ export class Login {
   loading = false;
   errorMessage = '';
 
+  @Output() loginSuccess = new EventEmitter<string>(); // emits token
+
   constructor(private authService: AuthService, private router: Router) {}
 
-  async onLogin() {
+  onLogin() {
     this.loading = true;
     this.errorMessage = '';
 
-    try {
-      const response = await this.authService.login(this.username, this.password);
-      console.log('Login successful:', response);
-      
-      // Redirect to dashboard (or another route)
-      this.router.navigate(['/dashboard']);
-    } catch (error: any) {
-      console.error('Login errsssor:', error);
-      this.errorMessage = 'Invalid credentials or server error';
-      this.router.navigate(['prearrangement']);
-    } finally {
-      this.loading = false;
-    }
+    this.authService.login(this.username, this.password).subscribe({
+      next: (res: any) => {
+        console.log('Login successful:', res);
+        localStorage.setItem('access_token', res);
+
+        this.loginSuccess.emit(res.access_token);
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        this.errorMessage = 'Invalid credentials or server error';
+        this.loading = false;
+      }
+    });
   }
 
 }
