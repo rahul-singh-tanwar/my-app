@@ -22,7 +22,7 @@ export class Login {
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/prearrangement']);
+      this.router.navigate(['/user-tasks']);
     }
   }
 
@@ -36,7 +36,7 @@ export class Login {
         console.log('Login successful:', res);
         localStorage.setItem('access_token', res);
 
-        this.router.navigate(['/prearrangement']);
+        this.router.navigate(['/user-tasks']);
 
         this.loading = false;
       },

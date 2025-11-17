@@ -57,7 +57,7 @@ export class App {
     console.log('Token received in AppComponent:', token);
     this.showLayout = true;
 
-    this.router.navigate(['/prearrangement']);
+    this.router.navigate(['/user-tasks']);
   }
 
    logout(): void {
