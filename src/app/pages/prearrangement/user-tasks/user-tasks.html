@@ -3,9 +3,9 @@
     <mat-toolbar color="primary" class="toolbar">
         <span>🧾 User Tasks</span>
         <span class="spacer"></span>
-        <button mat-raised-button color="accent" (click)="refreshTasks()">
+        <!-- <button mat-raised-button color="accent" (click)="refreshTasks()">
             Refresh
-        </button>
+        </button> -->
         <!--     <button mat-raised-button color="primary" (click)="goToUploadFiles()">
             <mat-icon>cloud_upload</mat-icon>
             Upload Documents
@@ -124,7 +124,7 @@
             </ng-container>
 
             <ng-container matColumnDef="preArrangNumber">
-                <th mat-header-cell *matHeaderCellDef> Pre Arrangement No </th>
+                <th mat-header-cell *matHeaderCellDef> Pre-arrangement Number </th>
                 <td mat-cell *matCellDef="let task">
                     {{ task.preArrangNumber || '—' }}
                 </td>

@@ -30,10 +30,10 @@ import { PolicyDetailsDialog } from './policy-details-dialog/policy-details-dial
 export class ReviewPolicies {
   dataSource = [
     {
-      companyName: 'ABC Insurance',
-      policyType: 'Health',
-      policyNumber: '12345',
-      policyStatus: 'Active',
+      companyName: 'Allianz Ayudhya',
+      policyType: 'A&H',
+      policyNumber: 'PA-2025-044444',
+      policyStatus: 'Inforce',
       effectiveDate: '2023-01-01',
       expiryDate: '2024-01-01',
       firstUseDate: '2023-02-01',
@@ -43,39 +43,39 @@ export class ReviewPolicies {
       ]
     },
     {
-      companyName: 'XYZ Life',
-      policyType: 'Life',
-      policyNumber: '67890',
-      policyStatus: 'Expired',
+      companyName: 'Allianz Ayudhya',
+      policyType: 'A&H',
+      policyNumber: 'PA-2025-055555',
+      policyStatus: 'Inforce',
       effectiveDate: '2021-03-10',
       expiryDate: '2024-03-10',
-      firstUseDate: '2021-04-01',
+      firstUseDate: '2021-09-01',
       benefits: [
         { name: 'Death Benefit', limit: '₹10,00,000', remarks: 'Full coverage' },
         { name: 'Accidental Cover', limit: '₹5,00,000', remarks: 'Covers accidental death' }
       ]
     },
     {
-      companyName: 'CarePlus',
-      policyType: 'Travel',
-      policyNumber: 'T98324',
-      policyStatus: 'Active',
+      companyName: 'Allianz Ayudhya',
+      policyType: 'L&H',
+      policyNumber: 'OL-2023-099999',
+      policyStatus: 'Inforce',
       effectiveDate: '2024-06-01',
       expiryDate: '2025-06-01',
       firstUseDate: '2024-06-15',
       benefits: [
-        { name: 'Lost Baggage', limit: '₹1,00,000', remarks: 'Includes delay compensation' },
+        { name: 'Death Benifit', limit: '₹1,00,000', remarks: 'Includes delay compensation' },
         { name: 'Medical Emergency', limit: '₹3,00,000', remarks: 'Covers hospitalization abroad' }
       ]
     },
     {
-      companyName: 'MediShield',
-      policyType: 'Health',
-      policyNumber: 'MS44567',
-      policyStatus: 'Pending Renewal',
+      companyName: 'Allianz Ayudhya',
+      policyType: 'L&H',
+      policyNumber: 'OL-2023-088888',
+      policyStatus: 'Inforce',
       effectiveDate: '2022-09-10',
       expiryDate: '2023-09-10',
-      firstUseDate: '2022-10-01',
+      firstUseDate: '2023-10-01',
       benefits: [
         { name: 'Surgery Cover', limit: '₹1,50,000', remarks: 'Pre-approved surgeries only' },
         { name: 'Diagnostics', limit: '₹25,000', remarks: 'Covers lab tests' }

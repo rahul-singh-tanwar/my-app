@@ -1,6 +1,6 @@
 <nav class="left-nav">
 
-  <a mat-button [class.active]="isActive('/prearrangement')" (click)="navigateTo('/prearrangement')">
+  <a mat-button *ngIf="auth.canAccess({ users: ['demo']})" [class.active]="isActive('/prearrangement')" (click)="navigateTo('/prearrangement')">
     <mat-icon>assignment</mat-icon>
     Launch Pre-arrangement
   </a>
@@ -17,7 +17,7 @@
   </a>
 
   <a mat-button [class.active]="isActive('/team-performance')" (click)="navigateTo('/team-performance')">
-    <mat-icon>groups</mat-icon>
+    <mat-icon>task</mat-icon>
     Task Dashboard
   </a>
 

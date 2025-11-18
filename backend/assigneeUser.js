@@ -34,13 +34,20 @@ let currentIndex = getCurrentIndex();
 zbc.createWorker({
   taskType: 'assign-reviewer',
   taskHandler: async (job) => {
-    const users = ['user1', 'user2'];
-    const index = Math.floor(Math.random() * users.length);
-    const assignee = users[index];
+
+    // Load rotation
+    let currentIndex = getCurrentIndex();
+
+    // Select user
+    const assignee = users[currentIndex];
     console.log(`✅ Assigned to: ${assignee}`);
 
-    // ✅ Correct way to complete the job
-    await job.complete({ assignee });
+    // Move index forward for next task
+    const nextIndex = (currentIndex + 1) % users.length;
+    saveCurrentIndex(nextIndex);
 
+    // Complete job
+    await job.complete({ assignee });
   }
 });
+

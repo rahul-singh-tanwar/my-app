@@ -55,6 +55,7 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         processName: '',
         priority: '',
         tenantId: '',
+        name    : '',   
     };
 
     possibleStates = [
@@ -234,18 +235,44 @@ this.tasksSubscription = this.http.post<any>(
     /** ---------------------------
      *   🟦 Table Filtering
      * --------------------------- */
+    /*
     applyFilters(): void {
         this.filteredTasks = this.tasks.filter(task => {
             return (!this.filters.state || task.state === this.filters.state) &&
                 (!this.filters.processName || task.processName === this.filters.processName) &&
                 (!this.filters.priority || task.priority === +this.filters.priority) &&
+                (!this.filters.name || task.name === this.filters.name) &&
                 (!this.filters.tenantId || task.tenantId === this.filters.tenantId);
         });
 
         this.dataSource = new MatTableDataSource(this.filteredTasks);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-    }
+    }*/
+
+        applyFilters(): void {
+    const username = localStorage.getItem('username') ?? 'demo';
+
+    this.filteredTasks = this.tasks.filter(task => {
+
+        // 🟥 ROLE-BASED FILTER FOR DEMO USER
+        if (username === 'demo') {
+            return task.name === 'Download GOP';
+        }
+
+        // 🟦 Existing filters for all other users
+        return (!this.filters.state || task.state === this.filters.state) &&
+               (!this.filters.processName || task.processName === this.filters.processName) &&
+               (!this.filters.priority || task.priority === +this.filters.priority) &&
+               (!this.filters.name || task.name === this.filters.name) &&
+               (!this.filters.tenantId || task.tenantId === this.filters.tenantId);
+    });
+
+    this.dataSource = new MatTableDataSource(this.filteredTasks);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+}
+
 
     getStateClass(state: string): string {
         switch (state) {

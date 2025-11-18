@@ -59,4 +59,31 @@ export class AuthService {
         })
       );
   }
+
+  get username(): string {
+    return localStorage.getItem('username') ?? '';
+  }
+
+  get role(): string {
+    return localStorage.getItem('role') ?? '';
+  }
+
+  /** Check if user has any of these roles */
+  hasRole(roles: string[]): boolean {
+    return roles.includes(this.role);
+  }
+
+  /** Check if user ID matches allowed list */
+  hasUser(users: string[]): boolean {
+    return users.includes(this.username);
+  }
+
+  /** Universal access control */
+  canAccess(config: { users?: string[], roles?: string[] }): boolean {
+    return (
+      (config.users && config.users.includes(this.username)) ||
+      (config.roles && config.roles.includes(this.role)) ||
+      false
+    );
+  }
 }
