@@ -54,6 +54,28 @@ async function getAccessToken(req) {
 }
 
 
+function extractVariables(items) {
+  const proccesed =  items.map(item => {
+    let value = item.value;
+
+    try {
+      value = JSON.parse(value);
+    } catch (err) {
+      console.warn(`⚠️ Could not parse variable ${item.name} value as JSON`);
+      // If parsing fails, keep raw value (string or number)
+    }
+
+    return {
+      name: item.name,
+      value: value
+    };
+  });
+
+  console.log('✅ Extracted variables:', items);
+
+  return proccesed;
+}
+
 app.post('/upload', upload.array('files'), (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: 'No files uploaded' });
@@ -330,6 +352,8 @@ app.get('/user-tasks/:userTaskKey/variables', async (req, res) => {
 
   const token = await getAccessToken(req);
 
+  // console.log('Fetching variables for userTaskKey:', userTaskKey, token);
+
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No access token provided" });
   }
@@ -338,7 +362,7 @@ app.get('/user-tasks/:userTaskKey/variables', async (req, res) => {
 
     const camundaResponse = await axios.post(
       `http://localhost:8088/v2/user-tasks/${userTaskKey}/variables/search`,
-      {}, // body of POST request (empty JSON)
+      {},
       {
         headers: {
           'Content-Type': 'application/json',
@@ -347,7 +371,14 @@ app.get('/user-tasks/:userTaskKey/variables', async (req, res) => {
       }
     );
 
-    return res.json(camundaResponse.data); // axios stores response in .data
+    if(camundaResponse.data.items) {
+      return res.json(extractVariables(camundaResponse.data.items));
+    }
+    else{
+      console.warn(`No variables found for userTaskKey: ${userTaskKey}`);
+      return res.status(404).json({ message: 'No variables found for this user task' });
+    }
+
   } catch (err) {
     console.error('Failed to fetch task variables', err);
     return res.status(500).json({ error: 'Failed to fetch task variables' });

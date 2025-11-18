@@ -257,9 +257,9 @@ this.tasksSubscription = this.http.post<any>(
     this.filteredTasks = this.tasks.filter(task => {
 
         // 🟥 ROLE-BASED FILTER FOR DEMO USER
-        if (username === 'demo') {
-            return task.name === 'Download GOP';
-        }
+        // if (username === 'demo') {
+        //     return task.name === 'Download GOP';
+        // }
 
         // 🟦 Existing filters for all other users
         return (!this.filters.state || task.state === this.filters.state) &&

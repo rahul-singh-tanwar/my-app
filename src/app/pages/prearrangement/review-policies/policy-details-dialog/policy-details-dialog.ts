@@ -76,11 +76,12 @@ export class PolicyDetailsDialog {
     }),
 
     tap(() => {
+      console.log('Preparing to complete task with variables: ', this.data);
       variables = {
-        physicianLicense: this.physicianLicense,
-        policy_number: this.data.policyNumber,
+        physicianNumber: this.physicianLicense,
+        selectedPolicyNumber: this.data.policyNumber,
         simbAmount: this.simbAmount,
-        uplaodfiles: uploadedFiles,
+        uploadFiles: uploadedFiles,
         policyAge: this.getDateDifference(
           new Date(this.data.effectiveDate),
           new Date(this.data.firstUseDate)
