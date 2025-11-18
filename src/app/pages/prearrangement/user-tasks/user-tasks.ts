@@ -191,15 +191,16 @@ this.tasksSubscription = this.http.post<any>(
         event.preventDefault();
         this.selectedTask = task;
 
-        this.http.post(`${this.baseUrl}/user-tasks/${task.userTaskKey}/variables`, {})
+        this.camundaService.getUserTaskVariables(this.selectedTask.userTaskKey)
             .subscribe({
                 next: (response: any) => {
-                    const variables: any = {};
-                    if (response.items?.length) {
-                        response.items.forEach((v: any) => (variables[v.name] = v.value));
-                    }
-                    this.taskVariables = variables;
-                    this.taskForm = this.buildFormGroup(this.taskVariables);
+                    console.log('✅ Fetched task variables:', response);
+                    // const variables: any = {};
+                    // if (response.items?.length) {
+                    //     response.items.forEach((v: any) => (variables[v.name] = v.value));
+                    // }
+                    // this.taskVariables = variables;
+                    // this.taskForm = this.buildFormGroup(this.taskVariables);
                 },
                 error: (err) => console.error('❌ Failed to fetch task variables', err),
             });

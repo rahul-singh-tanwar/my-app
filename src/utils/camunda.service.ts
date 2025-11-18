@@ -58,4 +58,11 @@ export class CamundaService {
       this.getAuthOptions()
     );
   }
+
+  getUserTaskVariables(userTaskKey: string): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}/user-tasks/${userTaskKey}/variables`,
+      this.getAuthOptions()
+    );
+  }
 }
