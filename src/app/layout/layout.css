@@ -48,17 +48,20 @@
 .allianz-text {
   font-size: 20px;
   font-weight: 700;
-  color: #1976d2;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #0066CC;
+  font-family: 'AllianzNeo', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  line-height: 1;
 }
 
 .allianz-icon {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .allianz-logo-img {
-  height: 36px;
+  height: 28px;
   width: auto;
   filter: brightness(0) saturate(100%) invert(27%) sepia(96%) saturate(1804%) hue-rotate(210deg) brightness(95%) contrast(101%);
 }

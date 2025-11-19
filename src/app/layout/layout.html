@@ -7,13 +7,14 @@
       
       <div class="logo-section">
         <div class="allianz-icon">
-          <img src="/allianz-logo.svg" alt="Allianz Logo" class="allianz-logo-img">
+          <span class="allianz-text">Allianz</span>
+          <img src="/allianz-OG-logo.svg" alt="Allianz Logo" class="allianz-logo-img">
         </div>
       </div>
     </div>
 
     <div class="header-center">
-      <h1 class="page-title">Process Performance Dashboard</h1>
+      <h1 class="page-title">{{ pageTitle }}</h1>
     </div>
 
     <div class="header-right">
@@ -44,7 +45,7 @@
   <div class="main-layout">
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav mode="side" [opened]="isNavbarOpen" class="left-sidenav">
-        <app-left-nav></app-left-nav>
+        <app-left-nav (titleChange)="setPageTitle($event)"></app-left-nav>
       </mat-sidenav>
 
       <mat-sidenav-content class="main-content">

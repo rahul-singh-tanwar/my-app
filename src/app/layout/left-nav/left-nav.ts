@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -15,17 +15,37 @@ import { AuthService } from '../../../utils/AuthService';
 })
 export class LeftNav {
    @Input() collapsed = false;
+   @Output() titleChange = new EventEmitter<string>();
 
    private static readonly PREARRANGEMENT_ROUTE = '/prearrangement';
 
-   constructor(private iframeService: IframeService, private router: Router, private camundaService: CamundaService, public auth: AuthService) 
-   {}
+   constructor(
+    private iframeService: IframeService, 
+    private router: Router, 
+    private camundaService: CamundaService, 
+    public auth: AuthService
+   ) {}
+
+  private routeTitleMap: { [key: string]: string } = {
+    '/user-tasks': 'Work',
+    '/process': 'Process',
+    '/process-performance': 'Process Performance',
+    '/team-performance': 'Team Performance',
+    '/ccm-work-queue': 'CCM Work Queue',
+    '/prearrangement': 'Launch',
+  };
 
   openIframe(url: string) {
     this.iframeService.setUrl(url);
     this.router.navigate(['/iframe']);
+    this.titleChange.emit('External Content');
   }
+
   navigateTo(route: string) {
+    const title = this.routeTitleMap[route];
+    if (title) {
+      this.titleChange.emit(title);
+    }
 
     this.router.navigate([route]);
     // if(route === LeftNav.PREARRANGEMENT_ROUTE) {  
