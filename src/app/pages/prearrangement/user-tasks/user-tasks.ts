@@ -16,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 // import { CamundaFormComponent } from '../../../services/camunda-form.component';
 import { Router } from '@angular/router';
 import { CamundaService } from '../../../../utils/camunda.service';
+import * as CcmWorkDTO from './ccm-workDTO.js';
+import { CcmWorkQueue } from './ccm-work-queue/ccm-work-queue';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-user-tasks',
@@ -36,6 +39,8 @@ import { CamundaService } from '../../../../utils/camunda.service';
         MatInputModule,
         MatChipsModule,
         MatIconModule,
+        CcmWorkQueue,
+        MatDialogModule
     ],
     templateUrl: './user-tasks.html',
     styleUrls: ['./user-tasks.scss'],
@@ -55,7 +60,7 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         processName: '',
         priority: '',
         tenantId: '',
-        name    : '',   
+        name: '',
     };
 
     possibleStates = [
@@ -83,7 +88,8 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private fb: FormBuilder,
         private router: Router,
-        private camundaService: CamundaService
+        private camundaService: CamundaService,
+        public dialog: MatDialog
     ) {
         this.taskForm = this.fb.group({});
     }
@@ -97,9 +103,94 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         if (this.tasksSubscription) this.tasksSubscription.unsubscribe();
     }
 
-    /** ---------------------------
-     *   🟦 WebSocket Setup
-     * --------------------------- */
+
+
+    openCcmWorkQueue(taskVariables: any[]) {
+        // Convert variables array into a key-value map
+        const varsMap = this.variablesToMap(taskVariables);
+        console.log("Mapped Variables:", varsMap);
+
+        // Extract eligibility results safely
+        const eligibilityResults = varsMap.eligibilityResults || [];
+
+        // Build eligiblePolicies
+        const eligiblePolicies = eligibilityResults.map((item: any) => ({
+            companyName: item.companyName,
+            policyType: item.policyType,
+            policyNumber: item.policies?.policyNumber,
+            effectiveDate: item.policies?.effectiveDate,
+            expiryDate: item.policies?.expiryDate
+        }));
+
+        // Build benefits structure
+        const benefits = eligibilityResults.map((item: any) => ({
+            companyName: item.companyName,
+            policyType: item.policyType,
+            policyNumber: item.policies?.policyNumber,
+            policyStatus: item.policies?.policyStatus,
+            effectiveDate: item.policies?.effectiveDate,
+            expiryDate: item.policies?.expiryDate,
+            firstUseDate: item.policies?.firstUseDate,
+            benefits: item.policies?.benefits || []
+        }));
+
+        // Prepare the dialog data to match CcmWorkDTO.ReadonlyPopupData
+        const dialogData: CcmWorkDTO.ReadonlyPopupData = {
+            eligiblePolicies,
+            benefits,
+
+            uploadedDocuments: {
+                formFiles: varsMap.uplaodfiles?.formFiles || [],
+                labFiles: varsMap.uplaodfiles?.labFiles || [],
+                otherFiles: varsMap.uplaodfiles?.otherFiles || []
+            },
+
+            customerInfo: {
+                nationalId: varsMap.customerInfo?.nationalId || "",
+                policyNumber: varsMap.customerInfo?.policyNumber || ""
+            },
+
+            visitInfo: {
+                visitType: varsMap.visitInfo?.visitType || "",
+                reservationType: varsMap.visitInfo?.reservationType || "",
+                ICD10: varsMap.visitInfo?.ICD10 || "",
+                ICD9: varsMap.visitInfo?.ICD9 || "",
+                AdmissionDate: varsMap.visitInfo?.AdmissionDate || "",
+                AccidentDate: varsMap.visitInfo?.AccidentDate || ""
+            },
+
+            prearengment: varsMap.preArrangNumber || "",
+            physicianLicenceNumber:
+                varsMap.physicianNumber || varsMap.physicianLicense || "",
+            silbmAmount: varsMap.simbAmount || ""
+        };
+
+        // Open dialog
+        const dialogRef = this.dialog.open(CcmWorkQueue, {
+            width: "900px",
+            maxHeight: "90vh",
+            data: dialogData
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            console.log("Dialog closed:", result);
+        });
+    }
+
+    // Converts variables [{name: '', value: ''}] → { name: value }
+    private variablesToMap(variables: any[]): any {
+        console.log("Converting variables array to map:", variables);
+        const map: any = {};
+
+            variables.forEach((v) => {
+                map[v.name] = v.value;
+            });
+
+        return map;
+    }
+
+
+
     initializeWebSocket() {
         this.ws = new WebSocket(this.wsUrl);
 
@@ -130,64 +221,61 @@ export class UserTasksComponent implements OnInit, OnDestroy {
     }
 
     async refreshTasks() {
-  const username = localStorage.getItem('username') ?? 'demo';
+        const username = localStorage.getItem('username') ?? 'demo';
 
-  const payload = {
-    filter: { assignee: username, state: this.filters.state || 'CREATED' },
-    page: { from: 0, limit: 100 }
-  };
+        const payload = {
+            filter: { assignee: username, state: this.filters.state || 'CREATED' },
+            page: { from: 0, limit: 100 }
+        };
 
-const token = localStorage.getItem('token');
-const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
-this.tasksSubscription = this.http.post<any>(
-    `${this.baseUrl}/user-tasks/searchbyUser`,
-    payload,
-    headers ? { headers } : undefined
-).subscribe({
-    next: async (response) => {
-        const tasks = response.items || [];
+        this.tasksSubscription = this.http.post<any>(
+            `${this.baseUrl}/user-tasks/searchbyUser`,
+            payload,
+            headers ? { headers } : undefined
+        ).subscribe({
+            next: async (response) => {
+                const tasks = response.items || [];
 
-      // 🟦 Fetch variables for each task & attach "preArrangNumber"
-      for (const task of tasks) {
-        try {
-          const vars: any = await this.http
-            .post(`${this.baseUrl}/user-tasks/${task.userTaskKey}/variables`, {})
-            .toPromise();
+                // 🟦 Fetch variables for each task & attach "preArrangNumber"
+                for (const task of tasks) {
+                    try {
+                        const vars: any = await this.http
+                            .post(`${this.baseUrl}/user-tasks/${task.userTaskKey}/variables`, {})
+                            .toPromise();
 
-          if (vars.items?.length) {
-            const variableMap: any = {};
-            vars.items.forEach((v: any) => variableMap[v.name] = v.value);
+                        if (vars.items?.length) {
+                            const variableMap: any = {};
+                            vars.items.forEach((v: any) => variableMap[v.name] = v.value);
 
-            task.preArrangNumber = variableMap["preArrangNumber"] ?? null;  // <-- ★ Attach to task
-          } else {
-            task.preArrangNumber = null;
-          }
-        } catch (err) {
-          console.error(`Failed fetching variables for task ${task.userTaskKey}`, err);
-          task.preArrangNumber = null;
-        }
-      }
+                            task.preArrangNumber = variableMap["preArrangNumber"] ?? null;  // <-- ★ Attach to task
+                        } else {
+                            task.preArrangNumber = null;
+                        }
+                    } catch (err) {
+                        console.error(`Failed fetching variables for task ${task.userTaskKey}`, err);
+                        task.preArrangNumber = null;
+                    }
+                }
 
-      this.tasks = tasks;
+                this.tasks = tasks;
 
-      // Build dropdown of process names
-      this.processNames = [...new Set(this.tasks.map((t) => t.processName).filter(Boolean))];
+                // Build dropdown of process names
+                this.processNames = [...new Set(this.tasks.map((t) => t.processName).filter(Boolean))];
 
-      this.applyFilters();
-    },
-    error: (err) => console.error('❌ Failed to fetch tasks', err),
-  });
-}
+                this.applyFilters();
+            },
+            error: (err) => console.error('❌ Failed to fetch tasks', err),
+        });
+    }
 
     /** Navigate */
     goToUploadFiles() {
         this.router.navigate(['/document-upload']);
     }
 
-    /** ---------------------------
-     *   🟦 Task Variable Fetch (HTTP)
-     * --------------------------- */
     selectTask(task: any, event: Event) {
         event.preventDefault();
         this.selectedTask = task;
@@ -195,43 +283,20 @@ this.tasksSubscription = this.http.post<any>(
         this.camundaService.getUserTaskVariables(this.selectedTask.userTaskKey)
             .subscribe({
                 next: (response: any) => {
-                    console.log('✅ Fetched task variables:', response);
-                    // const variables: any = {};
-                    // if (response.items?.length) {
-                    //     response.items.forEach((v: any) => (variables[v.name] = v.value));
-                    // }
-                    // this.taskVariables = variables;
-                    // this.taskForm = this.buildFormGroup(this.taskVariables);
+
+                    this.taskVariables = response;
+                    console.log(' variables:', this.taskVariables);
+                    this.openCcmWorkQueue(this.taskVariables);
+
                 },
                 error: (err) => console.error('❌ Failed to fetch task variables', err),
             });
     }
 
-    /** Build dynamic form */
-    buildFormGroup(obj: any): FormGroup {
-        const group: any = {};
-        Object.keys(obj).forEach((key) => {
-            const value = obj[key];
-            if (Array.isArray(value)) {
-                group[key] = this.fb.array(
-                    value.map((v) => (this.isObject(v) ? this.buildFormGroup(v) : new FormControl(v)))
-                );
-            } else if (this.isObject(value)) {
-                group[key] = this.buildFormGroup(value);
-            } else {
-                group[key] = new FormControl(value);
-            }
-        });
-        return this.fb.group(group);
-    }
+    // openccmWorkQueue() {
+    //     this.router.navigate(['/ccm-work-queue']);
+    // }
 
-    isObject(value: any): boolean {
-        return value && typeof value === 'object' && !Array.isArray(value);
-    }
-
-    taskFormKeys(): string[] {
-        return Object.keys(this.taskForm.controls);
-    }
 
     /** ---------------------------
      *   🟦 Table Filtering
@@ -251,28 +316,28 @@ this.tasksSubscription = this.http.post<any>(
         this.dataSource.sort = this.sort;
     }*/
 
-        applyFilters(): void {
-    const username = localStorage.getItem('username') ?? 'demo';
+    applyFilters(): void {
+        const username = localStorage.getItem('username') ?? 'demo';
 
-    this.filteredTasks = this.tasks.filter(task => {
+        this.filteredTasks = this.tasks.filter(task => {
 
-        // 🟥 ROLE-BASED FILTER FOR DEMO USER
-        // if (username === 'demo') {
-        //     return task.name === 'Download GOP';
-        // }
+            // 🟥 ROLE-BASED FILTER FOR DEMO USER
+            // if (username === 'demo') {
+            //     return task.name === 'Download GOP';
+            // }
 
-        // 🟦 Existing filters for all other users
-        return (!this.filters.state || task.state === this.filters.state) &&
-               (!this.filters.processName || task.processName === this.filters.processName) &&
-               (!this.filters.priority || task.priority === +this.filters.priority) &&
-               (!this.filters.name || task.name === this.filters.name) &&
-               (!this.filters.tenantId || task.tenantId === this.filters.tenantId);
-    });
+            // 🟦 Existing filters for all other users
+            return (!this.filters.state || task.state === this.filters.state) &&
+                (!this.filters.processName || task.processName === this.filters.processName) &&
+                (!this.filters.priority || task.priority === +this.filters.priority) &&
+                (!this.filters.name || task.name === this.filters.name) &&
+                (!this.filters.tenantId || task.tenantId === this.filters.tenantId);
+        });
 
-    this.dataSource = new MatTableDataSource(this.filteredTasks);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-}
+        this.dataSource = new MatTableDataSource(this.filteredTasks);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+    }
 
 
     getStateClass(state: string): string {

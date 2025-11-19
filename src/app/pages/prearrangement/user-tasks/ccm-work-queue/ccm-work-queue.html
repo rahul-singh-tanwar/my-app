@@ -1,0 +1,155 @@
+<h2 mat-dialog-title>CCM Work Queue Details</h2>
+
+<mat-dialog-content class="dialog-content">
+
+  <!-- === Eligible Policies === -->
+  <section class="section">
+    <h3>Eligible Policies</h3>
+
+    <table class="simple-table" *ngIf="data.eligiblePolicies?.length; else noPolicies">
+      <thead>
+        <tr>
+          <th>Company Name</th>
+          <th>Policy Type</th>
+          <th>Policy Number</th>
+          <th>Effective Date</th>
+          <th>Expiry Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of data.eligiblePolicies">
+          <td>{{ p.companyName }}</td>
+          <td>{{ p.policyType }}</td>
+          <td>{{ p.policyNumber }}</td>
+          <td>{{ p.effectiveDate || '-' }}</td>
+          <td>{{ p.expiryDate || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noPolicies>
+      <p class="muted">No eligible policies available.</p>
+    </ng-template>
+  </section>
+
+  <!-- === Benefits === -->
+  <section class="section">
+    <h3>Benefits</h3>
+
+    <div *ngIf="data.benefits?.length; else noBenefits">
+      <div class="benefit-block" *ngFor="let ben of data.benefits">
+
+        <h4>{{ ben.companyName }} — {{ ben.policyType }} ({{ ben.policyNumber }})</h4>
+
+        <div class="benefit-meta">
+          <p><strong>Status:</strong> {{ ben.policyStatus || '-' }}</p>
+          <p><strong>Effective:</strong> {{ ben.effectiveDate || '-' }}</p>
+          <p><strong>Expiry:</strong> {{ ben.expiryDate || '-' }}</p>
+          <p><strong>First Use:</strong> {{ ben.firstUseDate || '-' }}</p>
+        </div>
+
+        <table class="simple-table inner-table" *ngIf="ben.benefits?.length; else emptyBen">
+          <thead>
+            <tr>
+              <th>Benefit Name</th>
+              <th>Limit</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of ben.benefits">
+              <td>{{ b.benefitName }}</td>
+              <td>{{ b.benefitLimit }}</td>
+              <td>{{ b.remarks || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #emptyBen>
+          <p class="muted">No benefits listed.</p>
+        </ng-template>
+
+      </div>
+    </div>
+
+    <ng-template #noBenefits>
+      <p class="muted">No benefit records found.</p>
+    </ng-template>
+  </section>
+
+  <!-- === Uploaded Documents === -->
+  <section class="section">
+    <h3>Uploaded Documents</h3>
+
+    <div *ngIf="hasAnyUploaded(); else noUploadFiles">
+
+      <div class="upload-group" *ngIf="data.uploadedDocuments?.formFiles?.length">
+        <h4>Form Files</h4>
+        <ul>
+          <li *ngFor="let f of data.uploadedDocuments.formFiles">
+            {{ f.originalName }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="upload-group" *ngIf="data.uploadedDocuments?.labFiles?.length">
+        <h4>Lab Files</h4>
+        <ul>
+          <li *ngFor="let f of data.uploadedDocuments.labFiles">
+            {{ f.originalName }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="upload-group" *ngIf="data.uploadedDocuments?.otherFiles?.length">
+        <h4>Other Files</h4>
+        <ul>
+          <li *ngFor="let f of data.uploadedDocuments.otherFiles">
+            {{ f.originalName }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <ng-template #noUploadFiles>
+      <p class="muted">No documents uploaded.</p>
+    </ng-template>
+  </section>
+
+  <!-- === Two column info === -->
+  <section class="section two-col">
+    <div>
+      <h3>Customer Information</h3>
+      <p><strong>National ID:</strong> {{ data.customerInfo?.nationalId || '-' }}</p>
+      <p><strong>Policy Number:</strong> {{ data.customerInfo?.policyNumber || '-' }}</p>
+    </div>
+
+    <div>
+      <h3>Visit Information</h3>
+      <p><strong>Visit Type:</strong> {{ data.visitInfo?.visitType || '-' }}</p>
+      <p><strong>Reservation Type:</strong> {{ data.visitInfo?.reservationType || '-' }}</p>
+      <p><strong>ICD10:</strong> {{ data.visitInfo?.ICD10 || '-' }}</p>
+      <p><strong>ICD9:</strong> {{ data.visitInfo?.ICD9 || '-' }}</p>
+      <p><strong>Admission Date:</strong> {{ data.visitInfo?.AdmissionDate || '-' }}</p>
+      <p><strong>Accident Date:</strong> {{ data.visitInfo?.AccidentDate || '-' }}</p>
+    </div>
+  </section>
+
+  <!-- === Additional Info === -->
+  <section class="section">
+    <h3>Pre-arrangement</h3>
+    <p>{{ data.prearengment || '-' }}</p>
+
+    <h3>Physician License Number</h3>
+    <p>{{ data.physicianLicenceNumber || '-' }}</p>
+
+    <h3>SIBM Amount</h3>
+    <p>{{ data.silbmAmount || '-' }}</p>
+  </section>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Close</button>
+</mat-dialog-actions>
