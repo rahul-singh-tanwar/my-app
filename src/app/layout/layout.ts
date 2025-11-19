@@ -34,8 +34,19 @@ export class Layout implements OnInit {
   userName: string = 'Loading...';
   userInitials: string = 'L';
   isNavbarOpen: boolean = true;
+  pageTitle: string = '';
 
-  constructor(private authService: AuthService, private http: HttpClient) {}
+  constructor(
+    private authService: AuthService, 
+    private http: HttpClient
+  ) {
+    this.pageTitle = localStorage.getItem('lastPageTitle') || 'Work';
+  }
+
+  setPageTitle(title: string) {
+    this.pageTitle = title;
+    localStorage.setItem('lastPageTitle', title);
+  }
 
   ngOnInit() {
     this.fetchUserData();
@@ -68,6 +79,7 @@ export class Layout implements OnInit {
   }
 
   logout() {
+    localStorage.removeItem('lastPageTitle');    
     this.authService.logout();
   }
 }

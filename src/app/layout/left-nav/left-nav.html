@@ -14,7 +14,7 @@
       <span class="nav-text">Process</span>
     </a>
 
-    <a class="nav-item" routerLink="/process-performance" routerLinkActive="active">
+    <a class="nav-item" [class.active]="isActive('/process-performance')" (click)="navigateTo('/process-performance')">
       <div class="nav-icon">
         <mat-icon>confirmation_number</mat-icon>
       </div>
