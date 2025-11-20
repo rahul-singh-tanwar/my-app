@@ -1,13 +1,16 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import * as CcmWorkDTO from '../ccm-workDTO';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import {  } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import * as CcmWorkDTO from '../ccm-workDTO'
 
 @Component({
   selector: 'app-ccm-work-queue',
   standalone: true,
   imports: [
     MatDialogModule,
+    MatButtonModule,
     CommonModule
   ],
   templateUrl: './ccm-work-queue.html',
@@ -18,15 +21,16 @@ export class CcmWorkQueue {
   constructor(
     public dialogRef: MatDialogRef<CcmWorkQueue>,
     @Inject(MAT_DIALOG_DATA) public data: CcmWorkDTO.ReadonlyPopupData
-  ) {}
+  ) { }
 
   close() {
     this.dialogRef.close();
   }
 
   hasAnyUploaded(): boolean {
-    const u = this.data.uploadedDocuments;
-    return !!(u && ((u.formFiles && u.formFiles.length) || (u.labFiles && u.labFiles.length) || (u.otherFiles && u.otherFiles.length)));
+    console.log("Uploaded Documents:", this.data);
+    const docs = this.data.uploadedDocuments;
+    return docs?.formFiles?.length || docs?.labFiles?.length || docs?.otherFiles?.length ? true : false;
   }
 
 }

@@ -283,10 +283,8 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         this.camundaService.getUserTaskVariables(this.selectedTask.userTaskKey)
             .subscribe({
                 next: (response: any) => {
-
-                    this.taskVariables = response;
-                    console.log(' variables:', this.taskVariables);
-                    this.openCcmWorkQueue(this.taskVariables);
+                    
+                    this.openCcmWorkQueue(response);
 
                 },
                 error: (err) => console.error('❌ Failed to fetch task variables', err),
