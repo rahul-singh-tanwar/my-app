@@ -1,7 +1,3 @@
-<!-- <button *ngIf="showForm" type="button" class="back-btn" (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon> Go Back
-  </button> -->
-
 <div *ngIf="!showReview">
 <label for="chk1">
   <input 
@@ -36,9 +32,6 @@
   (formSubmitted)="onFormSubmit($event)">
 </app-pre-arrangement-form>
 <div *ngIf="showReview">
-  <button type="button" class="back-btn" (click)="loadForm()">
-    <mat-icon>arrow_back</mat-icon> Go Back
-  </button>
-  <app-review-policies></app-review-policies>
+  <app-review-policies (backPressed)="loadForm()"></app-review-policies>
 </div>
 

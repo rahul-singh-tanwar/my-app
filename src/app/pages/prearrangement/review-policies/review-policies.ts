@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
@@ -25,9 +25,10 @@ import { PolicyDetailsDialog } from './policy-details-dialog/policy-details-dial
     PolicyDetailsDialog
   ],
   templateUrl: './review-policies.html',
-  styleUrls: ['./review-policies.css']
+  styleUrl: './review-policies.css'
 })
 export class ReviewPolicies {
+  @Output() backPressed = new EventEmitter<void>();
   dataSource = [
     {
       companyName: 'Allianz Ayudhya',
@@ -91,7 +92,33 @@ export class ReviewPolicies {
   expandedRow: any = null;
   selectedRow: any;
 
+  currentPage = 0;
+  pageSize = 10;
+  totalItems = this.dataSource.length;
+
+  get paginatedDataSource() {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.dataSource.slice(startIndex, endIndex);
+  }
+
+  get totalPages() {
+    return Math.ceil(this.totalItems / this.pageSize);
+  }
+
+  get hasPreviousPage() {
+    return this.currentPage > 0;
+  }
+
+  get hasNextPage() {
+    return this.currentPage < this.totalPages - 1;
+  }
+
   constructor(private dialog: MatDialog) {}
+
+  goBack() {
+    this.backPressed.emit();
+  }
 
   toggleRow(row: any) {
     this.expandedRow = this.expandedRow === row ? null : row;
@@ -106,6 +133,25 @@ export class ReviewPolicies {
       panelClass: 'custom-policy-dialog',
       data: row
     });
+  }
 
+  goToPreviousPage() {
+    if (this.hasPreviousPage) {
+      this.currentPage--;
+    }
+  }
+
+  goToNextPage() {
+    if (this.hasNextPage) {
+      this.currentPage++;
+    }
+  }
+
+  get startingEntryNumber() {
+    return this.currentPage * this.pageSize + 1;
+  }
+
+  get endingEntryNumber() {
+    return Math.min((this.currentPage + 1) * this.pageSize, this.totalItems);
   }
 }
