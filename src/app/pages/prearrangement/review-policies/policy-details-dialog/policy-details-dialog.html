@@ -44,7 +44,7 @@
 
       <mat-form-field appearance="fill" class="simb-field">
         <mat-label>SIMB Amount</mat-label>
-        <span matPrefix class="baht-prefix">฿&nbsp;</span>
+        <!-- <span matPrefix class="baht-prefix">฿&nbsp;</span> -->
         <input matInput name="simbAmount" [(ngModel)]="simbAmount" type="number" required />
         <mat-error *ngIf="detailsForm.submitted && !simbAmount">
           SIMB Amount is required

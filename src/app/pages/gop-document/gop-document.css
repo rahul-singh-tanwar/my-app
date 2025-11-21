@@ -46,6 +46,7 @@
    DOWNLOAD BUTTON
 ------------------------------------------------- */
 .download-btn {
+  text-transform: uppercase;
   background: #fff !important;
   color: #0d6efd !important;
   border-radius: 20px !important;
@@ -129,13 +130,35 @@ mat-card-title {
 /* -------------------------------------------------
    CLOSE BUTTON
 ------------------------------------------------- */
-.close-btn {
+.close-btn,
+.submit-btn {
+  text-transform: uppercase;
   height: 32px;
-  font-size: 13px;
+  font-size: 12px;
   padding: 4px 18px !important;
   border-radius: 20px !important;
   font-weight: 600;
   margin: 10px 0;
+}
+
+button[mat-stroked-button] {
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+button[mat-stroked-button]:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+button[mat-raised-button] {
+  background-color: #1976d2;
+  color: white;
+}
+
+button[mat-raised-button]:hover {
+  background-color: #0d47a1;;
+  color: white;
 }
 
 /* Fix dialog action alignment */
@@ -144,6 +167,8 @@ mat-dialog-actions,
   padding: 10px 16px !important;
   display: flex !important;
   justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px;
 }
 
 /* -------------------------------------------------

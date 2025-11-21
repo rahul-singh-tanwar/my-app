@@ -134,8 +134,8 @@ export class UserTasksComponent implements OnInit, OnDestroy {
 
      
         const dialogRef = this.dialog.open(GopDocument, {
-            width: "80vw",
-            height: "80vh",
+            width: "90vw",
+            height: "90vh",
             maxHeight: "100vh",
             maxWidth: '90vw',
             panelClass: "gop-document-dialog",

@@ -152,7 +152,7 @@ button[mat-stroked-button], button[mat-raised-button] {
   min-width: 80px;
   height: 28px;
   font-weight: 600;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   text-transform: uppercase;
   padding: 0 8px;
   font-size: 12px;
