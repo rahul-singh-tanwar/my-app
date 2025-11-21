@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import jsPDF from 'jspdf';
+import Swal from 'sweetalert2';
 import { CamundaService } from '../../../utils/camunda.service';
 import * as CcmWorkDTO from '../prearrangement/user-tasks/ccm-workDTO';
 
@@ -42,16 +43,28 @@ export class GopDocument {
   ngOnInit(): void {
   }
 
-  onSubmit() {
-    this.camundaService.completeUserTask(this.data.userTaskKey, {})
-      .subscribe(response => {
-        console.log('User task completed successfully:', response);
+onSubmit() {
+  this.camundaService.completeUserTask(this.data.userTaskKey, {})
+    .subscribe(response => {
+      console.log('User task completed successfully:', response);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: response?.message || 'User task completed successfully!',
+        confirmButtonColor: '#1976d2'
+      }).then(() => {
         this.dialogRef.close(true);
-      }, error => {
-        console.error('Error completing user task:', error);
-        alert('Error completing user task. Please try again.');
       });
-  }
+    }, error => {
+      console.error('Error completing user task:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error?.error?.message || 'Error completing user task. Please try again.',
+        confirmButtonColor: '#d32f2f'
+      });
+    });
+}
   
 
   // Load the actual Allianz logo from assets
@@ -235,7 +248,7 @@ export class GopDocument {
         });
         
         // Remarks field
-        yPos += 10;
+        yPos += 20;
         doc.setTextColor(117, 117, 117);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8);
@@ -256,16 +269,16 @@ export class GopDocument {
         doc.text(remarksLines, leftX + 2, yPos + 8);
         
         // // Footer section
-        // yPos += 50;
-        // doc.setFillColor(255, 248, 220);
-        // doc.rect(20, yPos, 170, 15, 'F');
-        // doc.setDrawColor(220, 220, 220);
-        // doc.rect(20, yPos, 170, 15, 'S');
+        yPos += 50;
+        doc.setFillColor(255, 248, 220);
+        doc.rect(20, yPos, 170, 15, 'F');
+        doc.setDrawColor(220, 220, 220);
+        doc.rect(20, yPos, 170, 15, 'S');
         
-        // doc.setTextColor(95, 95, 95);
-        // doc.setFont('helvetica', 'italic');
-        // doc.setFontSize(7);
-        // doc.text('ℹ️  This document contains confidential information.', 25, yPos + 6);
+        doc.setTextColor(255, 0, 0);
+        doc.setFont('helvetica');
+        doc.setFontSize(7);
+        doc.text('This document contains confidential information. Please handle according to company policies.', 25, yPos + 6);
         // doc.text('Please handle according to company policies.', 25, yPos + 11);
         
         // Generation timestamp

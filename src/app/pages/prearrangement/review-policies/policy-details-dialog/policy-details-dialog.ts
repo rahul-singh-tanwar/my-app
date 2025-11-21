@@ -11,6 +11,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { CamundaService } from '../../../../../utils/camunda.service';
 import { switchMap, tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-policy-details-dialog',
@@ -133,16 +134,28 @@ export class PolicyDetailsDialog {
       ),
       catchError(err => {
         console.error('❌ Error in workflow:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err?.error?.message || 'Error completing user task. Please try again.',
+          confirmButtonColor: '#d32f2f'
+        });
         return of(null);
       })
     ).subscribe({
       next: (result) => {
         if (result) {
-          console.log('✔ Task completed successfully');
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: result?.message || 'Task completed successfully!',
+            confirmButtonColor: '#1976d2'
+          }).then(() => {
             this.dialogRef.afterClosed().subscribe(() => {
-            this.router.navigate(['/user-tasks']);
+              this.router.navigate(['/user-tasks']);
             });
             this.close();
+          });
         }
       }
     });
