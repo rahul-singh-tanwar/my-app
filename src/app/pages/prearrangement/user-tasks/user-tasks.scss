@@ -89,6 +89,13 @@ mat-chip {
   background-color: #9e9e9e;
 }
 
+.workqueue-dialog .mat-dialog-container {
+  padding: 0 !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow: hidden !important;
+}
+
 // .form-section {
 //   margin-top: 2rem;
 //   padding: 1rem;

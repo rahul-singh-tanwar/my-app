@@ -1,70 +1,62 @@
+/* -------------------------------------------------
+   MAIN CONTAINER
+------------------------------------------------- */
 .gop-document-container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #f5f5f5;
-  min-height: calc(100vh - 64px);
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* -------------------------------------------------
+   BLUE HEADER SECTION
+------------------------------------------------- */
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 20px;
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  background: #0d6efd;
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  color: white;
 }
 
+/* Title + Icon */
 .document-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .document-title h1 {
   margin: 0;
-  color: white;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
 }
 
 .title-icon {
-  font-size: 32px;
-  color: white;
+  color: #fff;
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
 }
 
+/* -------------------------------------------------
+   DOWNLOAD BUTTON
+------------------------------------------------- */
 .download-btn {
-  background-color: white !important;
-  color: #1976d2 !important;
-  padding: 12px 24px;
-  font-weight: 500;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #fff !important;
+  color: #0d6efd !important;
+  border-radius: 20px !important;
+  padding: 4px 16px !important;
+  height: 32px !important;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.download-btn:hover {
-  background-color: #f5f5f5 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.download-btn:disabled {
-  background-color: #666 !important;
-  cursor: not-allowed;
-}
-
-.download-btn mat-icon {
-  font-size: 20px;
-}
-
-.spinning {
-  animation: spin 1s linear infinite;
+.download-btn .spinning {
+  animation: spin 1.2s linear infinite;
 }
 
 @keyframes spin {
@@ -72,143 +64,109 @@
   100% { transform: rotate(360deg); }
 }
 
-.document-card,
-.policy-card {
-  margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* -------------------------------------------------
+   CARD STYLING
+------------------------------------------------- */
+.document-card {
+  padding: 12px !important;
+  border-radius: 10px !important;
 }
 
-.document-card mat-card-header,
-.policy-card mat-card-header {
-  background-color: #f8f9fa;
-  border-radius: 12px 12px 0 0;
-  padding: 16px 24px;
+mat-card-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
 }
 
-.document-card mat-card-title,
-.policy-card mat-card-title {
-  color: #003876;
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.document-card mat-card-content,
-.policy-card mat-card-content {
-  padding: 24px;
-}
-
+/* -------------------------------------------------
+   GRID – EXACTLY 5 PER ROW
+------------------------------------------------- */
 .fields-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px 16px;
+  margin-top: 12px;
 }
 
+/* Field Box */
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.field-group.full-width {
-  grid-column: 1 / -1;
+  background: #fafafa;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
 }
 
 .field-group label {
   font-weight: 600;
-  color: #555;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 12px;
+  margin-bottom: 3px;
+  color: #444;
 }
 
 .field-group span {
-  padding: 12px;
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 16px;
+  font-size: 13px;
+  font-weight: 500;
   color: #333;
-  min-height: 20px;
-  display: flex;
-  align-items: center;
 }
 
-.field-group span.highlight {
-  background-color: #e3f2fd;
-  border-color: #003876;
-  color: #003876;
+/* Highlighted fields */
+.highlight {
+  color: #1976d2;
   font-weight: 600;
 }
 
-.field-group span.amount {
+.amount {
   color: #2e7d32;
   font-weight: 600;
 }
 
-.field-group span.date {
-  color: #666;
-  font-style: italic;
+/* Remarks full width */
+.full-width {
+  grid-column: span 5;
 }
 
-.footer-section {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #e0e0e0;
+/* -------------------------------------------------
+   CLOSE BUTTON
+------------------------------------------------- */
+.close-btn {
+  height: 32px;
+  font-size: 13px;
+  padding: 4px 18px !important;
+  border-radius: 20px !important;
+  font-weight: 600;
+  margin: 10px 0;
 }
 
-.disclaimer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #666;
-  font-size: 14px;
-  margin: 0;
-  background-color: #fff3cd;
-  padding: 16px;
-  border-radius: 6px;
-  border-left: 4px solid #ffc107;
+/* Fix dialog action alignment */
+mat-dialog-actions,
+.dialog-actions {
+  padding: 10px 16px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
 }
 
-.info-icon {
-  color: #ff9800;
-  font-size: 20px;
+/* -------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+------------------------------------------------- */
+@media (max-width: 1024px) {
+  .fields-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .gop-document-container {
-    padding: 16px;
-  }
-  
-  .header-section {
-    flex-direction: column;
-    gap: 16px;
-    align-items: stretch;
-  }
-  
   .fields-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .document-title h1 {
-    font-size: 24px;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media print {
-  .download-btn {
-    display: none;
+@media (max-width: 480px) {
+  .fields-grid {
+    grid-template-columns: repeat(1, 1fr);
   }
-  
-  .gop-document-container {
-    background-color: white;
-    padding: 0;
-  }
-  
-  .document-card,
-  .policy-card {
-    box-shadow: none;
-    border: 1px solid #ddd;
+
+  .full-width {
+    grid-column: span 1;
   }
 }

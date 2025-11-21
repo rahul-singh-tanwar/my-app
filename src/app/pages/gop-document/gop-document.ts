@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import jsPDF from 'jspdf';
 
@@ -25,7 +26,7 @@ export class GopDocument {
   isDownloading = false;
   private logoBase64: string = '';
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,public dialogRef: MatDialogRef<GopDocument>) {
     this.loadActualLogo();
   }
   

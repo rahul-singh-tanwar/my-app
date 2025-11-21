@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { GopDocument } from '../../gop-document/gop-document';
 // import { CamundaFormComponent } from '../../../services/camunda-form.component';
 import { Router } from '@angular/router';
 import { CamundaService } from '../../../../utils/camunda.service';
@@ -307,9 +308,21 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         this.router.navigate(['/document-upload']);
     }
 
-    selectTask(task: any, event: Event) {
-        event.preventDefault();
-        this.selectedTask = task;
+   selectTask(task: any, event: Event) {
+    event.preventDefault();
+    this.selectedTask = task;
+
+    if (task.name === 'Download GOP') {
+        this.dialog.open(GopDocument, {
+            width: '90vw',
+            height: '90vh',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            panelClass: "workqueue-dialog",
+            data: { task: this.selectedTask }
+        });
+        return;
+    }
 
         this.camundaService.getUserTaskVariables(this.selectedTask.userTaskKey)
             .subscribe({

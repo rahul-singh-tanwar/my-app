@@ -1,10 +1,13 @@
-<div class="gop-document-container">
-  <div class="header-section">
-    <div class="document-title">
+<div class="gop-document-container compact">
+
+  <!-- BLUE HEADER SECTION -->
+  <div class="header-section compact-header">
+    <div class="document-title compact-title">
       <mat-icon class="title-icon">description</mat-icon>
       <h1>GOP Document</h1>
     </div>
-    <button mat-raised-button color="primary" class="download-btn" 
+
+    <button mat-raised-button color="primary" class="download-btn compact-btn" 
             (click)="downloadPdf()" 
             [disabled]="isDownloading">
       <mat-icon *ngIf="!isDownloading">download</mat-icon>
@@ -13,67 +16,77 @@
     </button>
   </div>
 
-  <mat-card class="document-card">
+  <!-- DOCUMENT CARD -->
+  <mat-card class="document-card compact-card">
     <mat-card-header>
       <mat-card-title>GOP Document Details</mat-card-title>
     </mat-card-header>
+
     <mat-card-content>
-      <div class="fields-grid">
-        <div class="field-group">
+      <div class="fields-grid compact-grid">
+
+        <div class="field-group compact-field">
           <label>National ID:</label>
           <span>{{ documentData.nationalId }}</span>
         </div>
-        
-        <div class="field-group">
+
+        <div class="field-group compact-field">
           <label>Pre Arrangement Number:</label>
           <span>{{ documentData.preArrangementNumber }}</span>
         </div>
-        
-        <div class="field-group">
+
+        <div class="field-group compact-field">
           <label>GOP Number:</label>
           <span class="highlight">{{ documentData.gopNumber }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Policy Number:</label>
           <span class="highlight">{{ documentData.policyNumber }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Member Name:</label>
           <span>{{ documentData.memberName }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Coverage Type:</label>
           <span>{{ documentData.coverageType }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Hospital Name:</label>
           <span>{{ documentData.hospitalName }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Approved Amount:</label>
           <span class="amount highlight">{{ documentData.approvedAmount }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Valid From:</label>
           <span>{{ documentData.validFrom }}</span>
         </div>
 
-        <div class="field-group">
+        <div class="field-group compact-field">
           <label>Valid To:</label>
           <span>{{ documentData.validTo }}</span>
         </div>
 
-        <div class="field-group full-width">
+        <div class="field-group full-width compact-field">
           <label>Remarks:</label>
           <span>{{ documentData.remarks }}</span>
         </div>
+
       </div>
     </mat-card-content>
   </mat-card>
+
+</div>
+
+<!-- CLOSE BUTTON -->
+<div mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-raised-button class="close-btn" (click)="dialogRef.close()">Close</button>
 </div>
