@@ -32,25 +32,67 @@
 
   <h3>Additional Details</h3>
   <form #detailsForm="ngForm">
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Physician Licence Number</mat-label>
-      <input matInput name="physicianLicense" [(ngModel)]="physicianLicense" required>
-      <mat-error *ngIf="detailsForm.submitted && !physicianLicense">
-        Physician Licence Number is required
-      </mat-error>
-    </mat-form-field>
+    <div class="details-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start;">
+      <mat-form-field appearance="fill">
+        <mat-label>Physician Licence Number</mat-label>
+        <input matInput name="physicianLicense" [(ngModel)]="physicianLicense" required>
+        <mat-error *ngIf="detailsForm.submitted && !physicianLicense">
+          Physician Licence Number is required
+        </mat-error>
+      </mat-form-field>
 
-  <mat-form-field appearance="fill" class="full-width simb-field">
-    <mat-label>SIMB Amount</mat-label>
-  
-    <span matPrefix class="baht-prefix">฿&nbsp;</span>
-  
-    <input matInput name="simbAmount" [(ngModel)]="simbAmount" type="number" required />
-  
-    <mat-error *ngIf="detailsForm.submitted && !simbAmount">
-      SIMB Amount is required
-    </mat-error>
-  </mat-form-field>
+      <mat-form-field appearance="fill" class="simb-field">
+        <mat-label>SIMB Amount</mat-label>
+        <span matPrefix class="baht-prefix">฿&nbsp;</span>
+        <input matInput name="simbAmount" [(ngModel)]="simbAmount" type="number" required />
+        <mat-error *ngIf="detailsForm.submitted && !simbAmount">
+          SIMB Amount is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Average Cost</mat-label>
+        <input matInput name="averageCost" [(ngModel)]="averageCost" type="number" required autocomplete="off" inputmode="decimal" />
+        <mat-error *ngIf="detailsForm.submitted && !averageCost">
+          Average Cost is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Length Of Stay</mat-label>
+        <input matInput name="lengthOfStay" [(ngModel)]="lengthOfStay" type="number" required autocomplete="off" inputmode="numeric" />
+        <mat-error *ngIf="detailsForm.submitted && !lengthOfStay">
+          Length Of Stay is required
+        </mat-error>
+      </mat-form-field>
+      
+    </div>
+    <div style="margin-top: 16px;">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Disease Details</mat-label>
+        <textarea matInput name="diseaseDetails" [(ngModel)]="diseaseDetails" required></textarea>
+        <mat-error *ngIf="detailsForm.submitted && !diseaseDetails">
+          Disease Details are required
+        </mat-error>
+      </mat-form-field>
+    </div>
+      <div [ngClass]="{'package-error': isSubmitted && !selectedPackage}" style="grid-column: 1 / -1; margin-bottom: 8px; border: 1px solid #1976d2; border-radius: 6px; padding: 16px; background: #f5f8fd;">
+        <label style="font-weight: 600; color: #1976d2; font-size: 1.1em; display: block; margin-bottom: 8px;">Select Package<span> *</span></label>
+        <mat-radio-group [(ngModel)]="selectedPackage" name="selectedPackage" required #packageCtrl="ngModel">
+          <mat-radio-button *ngFor="let pkg of packageList" [value]="pkg.Name" style="margin-right: 24px;">
+            {{ pkg.Name }}
+          </mat-radio-button>
+        </mat-radio-group>
+        <div *ngIf="isSubmitted && !selectedPackage" style="color: #d32f2f; font-size: 0.95em; margin-top: 4px;">
+          Please select a package
+        </div>
+      </div>
+      <style>
+        .package-error {
+          border: 2px solid #d32f2f !important;
+          background: #fff0f0 !important;
+        }
+      </style>
   </form>
   <hr />
 

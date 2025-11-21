@@ -54,7 +54,7 @@ export class App {
   }
 
   onUserLoggedIn(token: string) {
-    console.log('Token received in AppComponent:', token);
+    // console.log('Token received in AppComponent:', token);
     this.showLayout = true;
 
     this.router.navigate(['/user-tasks']);

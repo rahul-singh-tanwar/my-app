@@ -1,18 +1,20 @@
 import { Component, Inject, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, } from '@angular/material/dialog';
 import { FileUpload } from '../file-upload/file-upload';
 import { FormsModule, NgForm } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field'; // <mat-form-field>
-import { MatInputModule } from '@angular/material/input';          // <input matInput>
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 import { CamundaService } from '../../../../../utils/camunda.service';
 import { switchMap, tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
   selector: 'app-policy-details-dialog',
-  imports: [FileUpload, CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [FileUpload, CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatRadioModule],
   templateUrl: './policy-details-dialog.html',
   styleUrls: ['./policy-details-dialog.css'],
 })
@@ -23,16 +25,31 @@ export class PolicyDetailsDialog {
   taskname = 'Upload Documents';
   userTaskKey = '';
   processInstanceKey = '';
+  averageCost: number | null = null;
+  lengthOfStay: number | null = null;
+  diseaseDetails: string = '';
+
+  selectedPackage: string = '';
+  packageList = [
+    { Name: 'Basic Care' },
+    { Name: 'Standard Health' },
+    { Name: 'Premium Plus' },
+    { Name: 'Family Secure' },
+    { Name: 'Executive Wellness' }
+  ];
 
   @ViewChild('labFiles') labFiles!: FileUpload;
   @ViewChild('formFiles') formFiles!: FileUpload;
   @ViewChild('otherFiles') otherFiles!: FileUpload;
 
+  isSubmitted: boolean = false;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<PolicyDetailsDialog>,
     private camundaService: CamundaService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) { }
 
   close() {
@@ -46,7 +63,8 @@ export class PolicyDetailsDialog {
   
 
   submit(form: NgForm) {
-    if (!form.valid) {
+    this.isSubmitted = true;
+    if (!form.valid || !this.selectedPackage) {
       form.control.markAllAsTouched();
       return;
     }
@@ -78,6 +96,10 @@ export class PolicyDetailsDialog {
           selectedPolicyNumber: this.data.policyNumber,
           eligibilityResults: this.data,
           simbAmount: this.simbAmount,
+          averageCost: this.averageCost,
+          lengthOfStay: this.lengthOfStay,
+          diseaseDetails: this.diseaseDetails,
+          selectedPackage: { Name: this.selectedPackage },
           uploadFiles: uploadedFiles,
           policyAge: this.getDateDifference(
             new Date(this.data.effectiveDate),
@@ -96,8 +118,10 @@ export class PolicyDetailsDialog {
       next: (result) => {
         if (result) {
           console.log('✔ Task completed successfully');
-          this.dialogRef.close();
-          window.location.href = '/user-tasks';
+            this.dialogRef.afterClosed().subscribe(() => {
+            this.router.navigate(['/user-tasks']);
+            });
+            this.close();
         }
       }
     });

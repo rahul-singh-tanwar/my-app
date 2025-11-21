@@ -33,7 +33,6 @@ export class Login {
 
     this.authService.login(this.username, this.password).subscribe({
       next: (res: any) => {
-        console.log('Login successful:', res);
         localStorage.setItem('access_token', res);
 
         this.router.navigate(['/user-tasks']);
