@@ -66,3 +66,17 @@ export interface ReadonlyPopupData {
   diseaseDetails?: string;
   selectedPackage?: selectedPackage;
 }
+
+export interface GOPdata {
+  userTaskKey: string;
+  nationalId: string;
+  preArrangementNumber: string;
+  gopNumber: string; 
+  memberName: string;
+  coverageType: string;
+  policyNumber: string;
+  approvedAmount: number;
+  approvalDate: string;
+  approvalValidTill: string;
+  remarks: string;
+} 

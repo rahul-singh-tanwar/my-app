@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import jsPDF from 'jspdf';
+import { CamundaService } from '../../../utils/camunda.service';
+import * as CcmWorkDTO from '../prearrangement/user-tasks/ccm-workDTO';
 
 @Component({
   selector: 'app-gop-document',
@@ -26,23 +28,31 @@ export class GopDocument {
   isDownloading = false;
   private logoBase64: string = '';
   
-  constructor(private http: HttpClient,public dialogRef: MatDialogRef<GopDocument>) {
-    this.loadActualLogo();
+  constructor(
+    private http: HttpClient,
+    public dialogRef: MatDialogRef<GopDocument>,
+    private camundaService: CamundaService,
+    @Inject(MAT_DIALOG_DATA) public data: CcmWorkDTO.GOPdata,
+  ) {
+    
   }
   
-  documentData = {
-    nationalId: '1234567890',
-    preArrangementNumber: 'PA-2024-001234',
-    gopNumber: 'GOP-2024-001234',
-    policyNumber: 'POL-567890123',
-    memberName: 'John Smith',
-    coverageType: 'In-Patient Medical Coverage',
-    hospitalName: 'General Hospital Medical Center',
-    approvedAmount: '$15,000.00',
-    validFrom: '01/01/2024',
-    validTo: '31/12/2024',
-    remarks: 'Pre-approved for surgical procedures. Valid for emergency and planned admissions.'
-  };
+  // documentData: any = {};
+
+  ngOnInit(): void {
+  }
+
+  onSubmit() {
+    this.camundaService.completeUserTask(this.data.userTaskKey, {})
+      .subscribe(response => {
+        console.log('User task completed successfully:', response);
+        this.dialogRef.close(true);
+      }, error => {
+        console.error('Error completing user task:', error);
+        alert('Error completing user task. Please try again.');
+      });
+  }
+  
 
   // Load the actual Allianz logo from assets
   private loadActualLogo(): void {
@@ -123,6 +133,10 @@ export class GopDocument {
 
   downloadPdf() {
     this.isDownloading = true;
+    const promise = new Promise<void>((resolve, reject) => {
+      this.loadActualLogo();
+      resolve();
+    });
     
     // Small delay to show loading state
     setTimeout(() => {
@@ -165,16 +179,15 @@ export class GopDocument {
         
         // Field data
         const fields = [
-          { label: 'National ID', value: this.documentData.nationalId },
-          { label: 'Pre Arrangement Number', value: this.documentData.preArrangementNumber },
-          { label: 'GOP Number', value: this.documentData.gopNumber, highlight: true },
-          { label: 'Policy Number', value: this.documentData.policyNumber, highlight: true },
-          { label: 'Member Name', value: this.documentData.memberName },
-          { label: 'Coverage Type', value: this.documentData.coverageType },
-          { label: 'Hospital Name', value: this.documentData.hospitalName },
-          { label: 'Approved Amount', value: this.documentData.approvedAmount, highlight: true },
-          { label: 'Valid From', value: this.documentData.validFrom },
-          { label: 'Valid To', value: this.documentData.validTo }
+          { label: 'National ID', value: this.data.nationalId },
+          { label: 'Pre Arrangement Number', value: this.data.preArrangementNumber },
+          { label: 'GOP Number', value: this.data.gopNumber, highlight: true },
+          { label: 'Policy Number', value: this.data.policyNumber, highlight: true },
+          { label: 'Member Name', value: this.data.memberName },
+          { label: 'Coverage Type', value: this.data.coverageType },
+          { label: 'Approved Amount', value: this.data.approvedAmount, highlight: true },
+          { label: 'Valid From', value: this.data.approvalDate },
+          { label: 'Valid To', value: this.data.approvalValidTill }
         ];
         
         let leftColumn = true;
@@ -212,7 +225,7 @@ export class GopDocument {
             doc.setFont('helvetica', 'normal');
           }
           doc.setFontSize(9);
-          doc.text(field.value, xPos + 2, yPos + 8.5);
+            doc.text(String(field.value ?? ''), xPos + 2, yPos + 8.5);
           
           // Alternate columns
           if (!leftColumn) {
@@ -239,7 +252,7 @@ export class GopDocument {
         doc.setTextColor(33, 33, 33);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8);
-        const remarksLines = doc.splitTextToSize(this.documentData.remarks, 140);
+        const remarksLines = doc.splitTextToSize(this.data.remarks, 140);
         doc.text(remarksLines, leftX + 2, yPos + 8);
         
         // // Footer section
@@ -263,7 +276,7 @@ export class GopDocument {
         doc.text(`Generated on: ${now}`, 20, 285);
         
         // Save the PDF
-        const filename = `GOP_Document_${this.documentData.gopNumber.replace(/-/g, '_')}_${Date.now()}.pdf`;
+        const filename = `GOP_Document_.pdf`;
         doc.save(filename);
         
         console.log('PDF downloaded successfully');
@@ -277,3 +290,4 @@ export class GopDocument {
   }
 
 }
+

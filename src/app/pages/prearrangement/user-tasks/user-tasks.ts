@@ -104,6 +104,48 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         if (this.tasksSubscription) this.tasksSubscription.unsubscribe();
     }
 
+    openGopDocument(taskVariables: any[]) {
+        const varsMap = this.variablesToMap(taskVariables);
+        console.log("Mapped Variables for GOP Document:", varsMap);
+
+        const formatDate = (value: any): string => {
+            if (!value) return '';
+            const d = new Date(value);
+            if (isNaN(d.getTime())) return '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        };
+
+        const gopData: CcmWorkDTO.GOPdata = {
+            userTaskKey: this.selectedTask.userTaskKey || '',
+            nationalId: varsMap.customerInfo.nationalId || '',
+            preArrangementNumber: varsMap.preArrangNumber || '',
+            gopNumber: varsMap.gopNumber || 'GOP-' + Date.now(),
+            policyNumber: varsMap.selectedPolicyNumber || '',
+            memberName: varsMap.memberName || 'Rahul Singh Tanwar',
+            coverageType: varsMap.coverageType || 'Inpatient',
+            approvedAmount: varsMap.simbAmount || '0',
+            approvalDate: formatDate(varsMap.approvalDate || Date.now()),
+            approvalValidTill: formatDate(varsMap.approvalValidTill || (Date.now() + 30 * 24 * 60 * 60 * 1000 * 11)),
+            remarks: varsMap.remarks || 'Approved as per inpatient benefit rules'
+        };
+
+     
+        const dialogRef = this.dialog.open(GopDocument, {
+            width: "80vw",
+            height: "80vh",
+            maxHeight: "100vh",
+            maxWidth: '90vw',
+            panelClass: "gop-document-dialog",
+            data: gopData
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("GOP Document dialog closed:", result);
+        });
+    }
 
 
     openCcmWorkQueue(taskVariables: any[]) {
@@ -125,7 +167,7 @@ export class UserTasksComponent implements OnInit, OnDestroy {
 
         // Build benefits structure
         const selectedPolicyNumber = varsMap.selectedPolicyNumber;
-        
+
         const benefits = eligibilityResults.benefits || [];
 
         // Prepare the dialog data to match CcmWorkDTO.ReadonlyPopupData
@@ -183,9 +225,9 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         console.log("Converting variables array to map:", variables);
         const map: any = {};
 
-            variables.forEach((v) => {
-                map[v.name] = v.value;
-            });
+        variables.forEach((v) => {
+            map[v.name] = v.value;
+        });
 
         return map;
     }
@@ -226,14 +268,14 @@ export class UserTasksComponent implements OnInit, OnDestroy {
                 // 🟥 ROLE-BASED FILTER FOR DEMO USER
                 if (username === 'demo') {
                     this.tasks = incoming.filter(
-                    (t: any) => t.name?.trim() === 'Download GOP'
-                );
-                }else {
+                        (t: any) => t.name?.trim() === 'Download GOP'
+                    );
+                } else {
                     this.tasks = incoming;
-                }   
+                }
 
                 // 🔥🔥 STRICT FILTER at the data entry point
-                
+
                 console.log("username from localStorage:", username);
                 console.log("🔥 Filtered WebSocket tasks:", this.tasks);
 
@@ -308,28 +350,29 @@ export class UserTasksComponent implements OnInit, OnDestroy {
         this.router.navigate(['/document-upload']);
     }
 
-   selectTask(task: any, event: Event) {
-    event.preventDefault();
-    this.selectedTask = task;
-
-    if (task.name === 'Download GOP') {
-        this.dialog.open(GopDocument, {
-            width: '90vw',
-            height: '90vh',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            panelClass: "workqueue-dialog",
-            data: { task: this.selectedTask }
-        });
-        return;
-    }
-
+    selectTask(task: any, event: Event) {
+        event.preventDefault();
+        this.selectedTask = task;
         this.camundaService.getUserTaskVariables(this.selectedTask.userTaskKey)
             .subscribe({
                 next: (response: any) => {
-                    
-                    this.openCcmWorkQueue(response);
 
+                    if (task.name === 'CCMWorkQueue') {
+                        this.openCcmWorkQueue(response);
+                        return;
+                    }
+                    else {
+                        this.openGopDocument(response);
+                        return;
+                        // this.dialog.open(GopDocument, {
+                        //     width: '90vw',
+                        //     height: '90vh',
+                        //     maxWidth: '90vw',
+                        //     maxHeight: '90vh',
+                        //     panelClass: "workqueue-dialog",
+                        //     data: { task: this.selectedTask }
+                        // });
+                    }
                 },
                 error: (err) => console.error('❌ Failed to fetch task variables', err),
             });
@@ -363,10 +406,10 @@ export class UserTasksComponent implements OnInit, OnDestroy {
 
         this.filteredTasks = this.tasks.filter(task => {
 
-        // 🟥 ROLE-BASED FILTER FOR DEMO USER
-         if (username === 'demo') {
-             return task.name === 'Download GOP';
-         }
+            // 🟥 ROLE-BASED FILTER FOR DEMO USER
+            if (username === 'demo') {
+                return task.name === 'Download GOP';
+            }
 
             // 🟦 Existing filters for all other users
             return (!this.filters.state || task.state === this.filters.state) &&
