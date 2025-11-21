@@ -9,11 +9,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { PolicyDetailsDialog } from './policy-details-dialog/policy-details-dialog';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-review-policies',
   imports: [
     CommonModule,
+    FormsModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -96,11 +98,24 @@ export class ReviewPolicies {
   pageSize = 10;
   totalItems = this.dataSource.length;
 
-  get paginatedDataSource() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    return this.dataSource.slice(startIndex, endIndex);
-  }
+  policyTypeFilter: string = '';
+
+  get filteredDataSource() {
+  if (!this.policyTypeFilter) return this.dataSource;
+  return this.dataSource.filter(row => row.policyType === this.policyTypeFilter);
+}
+
+get paginatedDataSource() {
+  const filtered = this.filteredDataSource;
+  const startIndex = this.currentPage * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  return filtered.slice(startIndex, endIndex);
+}
+
+applyPolicyTypeFilter() {
+  this.currentPage = 0;
+  this.totalItems = this.filteredDataSource.length;
+}
 
   get totalPages() {
     return Math.ceil(this.totalItems / this.pageSize);

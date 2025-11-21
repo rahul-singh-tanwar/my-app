@@ -22,9 +22,16 @@
 
     <!-- Policy Type -->
     <ng-container matColumnDef="policyType">
-      <th mat-header-cell *matHeaderCellDef>Policy Type</th>
-      <td mat-cell *matCellDef="let row">{{ row.policyType }}</td>
-    </ng-container>
+  <th mat-header-cell *matHeaderCellDef>
+    Policy Type<br>
+    <select [(ngModel)]="policyTypeFilter" (change)="applyPolicyTypeFilter()" style="margin-top:4px; min-width:70px;">
+      <option value="">All</option>
+      <option value="A&H">A&amp;H</option>
+      <option value="L&H">L&amp;H</option>
+    </select>
+  </th>
+  <td mat-cell *matCellDef="let row">{{ row.policyType }}</td>
+</ng-container>
 
     <!-- Policy Number -->
     <ng-container matColumnDef="policyNumber">
