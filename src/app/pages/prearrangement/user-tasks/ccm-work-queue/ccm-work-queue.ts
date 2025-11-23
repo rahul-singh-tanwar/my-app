@@ -41,6 +41,21 @@ export class CcmWorkQueue {
     this.dialogRef.close();
   }
 
+  actionMode: string = 'refer';
+
+  // setActionMode(mode: 'approval' | 'externalPending' | 'referToTeam') {
+  //   this.actionMode = mode;
+  //   this.isApproved = mode === 'approve';
+  //   this.isExternalPending = mode === 'externalPending';
+  //   if (mode !== 'refer') {
+  //     this.referToTeam = null;
+  //   }
+  // }
+
+  // get isReferMode(): boolean {
+  //   return this.actionMode === 'refer';
+  // }
+
   // === APPROVAL & WORKFLOW FIELDS ===
   isApproved: boolean = false;           // Checkbox
   isExternalPending: boolean = false;    // Checkbox
@@ -61,6 +76,13 @@ export class CcmWorkQueue {
   }
 
   onSubmit() {
+    if(this.actionMode === "approval"){
+      this.isApproved = true;
+    }
+    else{
+      this.isApproved = false;
+    }
+    
     const payload = {
       isApproved: this.isApproved,
       isExternalPending: this.isExternalPending,
